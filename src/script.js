@@ -231,6 +231,9 @@ gltfLoader.load('room.glb',(gltf)=>{
  gui.add(roommodel.position,'z').min(-5).max(5).step(0.01)
  gui.add(roommodel.position,'y').min(-5).max(5).step(0.01)
  gui.add(roommodel.position,'x').min(-5).max(5).step(0.01)
+ pointgui.add(points[2].position,'x', -10, 10).step(0.01).name('X Axis');
+pointgui.add(points[2].position,'y', -10, 10).step(0.01).name('Y Axis');
+pointgui.add(points[2].position,'z', -10, 10).step(0.01).name('Z Axis');
 
 
 
@@ -339,7 +342,7 @@ const raycaster = new THREE.Raycaster()
       
     },
     {
-        position: new THREE.Vector3(-0.5337, 1.1611, -0.6641),
+        position: new THREE.Vector3(-0.66, 0.98, 0.38),
         element: document.querySelector('.point-2'),
 
       
@@ -348,9 +351,7 @@ const raycaster = new THREE.Raycaster()
 
 const pointgui = gui.addFolder('point 2 position')
 
-pointgui.add(points[2].position,'x', -10, 10).step(0.01).name('X Axis');
-pointgui.add(points[2].position,'y', -10, 10).step(0.01).name('Y Axis');
-pointgui.add(points[2].position,'z', -10, 10).step(0.01).name('Z Axis');
+
 
 /**
  * Sizes
