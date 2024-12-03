@@ -3,6 +3,8 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
+import { gsap } from 'gsap'
+
 
 
 /**
@@ -19,18 +21,64 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 
+//loading screen plane 
+const overlayGeometry = new THREE.PlaneGeometry(2,2,1,1)
+const overlaymaterial = new THREE.ShaderMaterial({
+    transparent: true,
+    uniforms:{
+      uAlpha: {value:1}
+    },
+    vertexShader:`
+    void main()
+    {
+       gl_Position =  vec4(position, 1.0);
+    }
+    `,
+    fragmentShader:`
+    uniform float uAlpha;
+    void main()
+    {
+      gl_FragColor = vec4(0.0,0.0,0.0,uAlpha);
+    }
+    `
+})
+const overlay = new THREE.Mesh(overlayGeometry,overlaymaterial)
+scene.add(overlay)
+
 /**
  * Loaders
  */
+const loadingbar = document.querySelector('.loading-bar')
+//loading manager
+const loadingmanager = new THREE.LoadingManager(
+    ()=>{
+        window.setTimeout(()=>{
+            gsap.to(overlaymaterial.uniforms.uAlpha,{duration:3,value:0})
+            loadingbar.classList.add('ended')
+            loadingbar.style.transform = ''
+        }, 500)
+
+        window.setTimeout(()=>{
+            sceneready = true
+        },4000)
+          
+    },
+    (itemUrl,itemloaded,itemtotal)=>{
+
+        const progressratio = itemloaded/itemtotal
+        loadingbar.style.transform = `scaleX(${progressratio})`
+
+    },
+)
 // Texture loader
-const textureLoader = new THREE.TextureLoader()
+const textureLoader = new THREE.TextureLoader(loadingmanager)
 
 // Draco loader
 const dracoLoader = new DRACOLoader()
 dracoLoader.setDecoderPath('draco/')
 
 // GLTF loader
-const gltfLoader = new GLTFLoader()
+const gltfLoader = new GLTFLoader(loadingmanager)
 gltfLoader.setDRACOLoader(dracoLoader)
 
 //texture
@@ -40,6 +88,9 @@ bakedtexture.colorSpace = THREE.SRGBColorSpace
 const bakedmaterial = new THREE.MeshBasicMaterial({map:bakedtexture})
 // bakedtexture.flipY = false
 // bakedtexture.colorSpace = THREE.SRGBColorSpace
+
+//sceneready
+let sceneready = false
 
 //bakedchair
 const bakedchairtexture = textureLoader.load('bakedchairlast.jpg')
@@ -163,14 +214,25 @@ bakedbooksmaterial.side = THREE.DoubleSide
 
 
 //model
-
+let roommodel = null;
 gltfLoader.load('room.glb',(gltf)=>{
-    console.log(gltf)
+    roommodel = gltf.scene;
+    // console.log(gltf)
    gltf.scene.traverse(child=>{
     // child.material = bakedwallmaterial
-    console.log(child)
+    // console.log(child)
 
    })
+   roommodel.rotation.y = 4.7;
+   roommodel.position.y= -0.27;
+   roommodel.position.z=0.45;
+   roommodel.position.x=0.58;
+
+ gui.add(roommodel.position,'z').min(-5).max(5).step(0.01)
+ gui.add(roommodel.position,'y').min(-5).max(5).step(0.01)
+ gui.add(roommodel.position,'x').min(-5).max(5).step(0.01)
+
+
 
    //groups
  const wallGroup = gltf.scene.children.find(children=>children.name === 'wall')
@@ -261,8 +323,34 @@ if(booksGroup){
 // //matrerial
 // chairmesh.material = bakedchairmaterial
     // console.log(gltf)
-   scene.add(gltf.scene)
+   scene.add(roommodel)
 })
+ //points
+const raycaster = new THREE.Raycaster()
+ const points =[
+    {
+        position: new THREE.Vector3(1.55, 0.3, -0.6),
+        element: document.querySelector('.point-0')
+    },
+    {
+        position: new THREE.Vector3(-0.5337, 1.1611, -0.6641),
+        element: document.querySelector('.point-1'),
+
+      
+    },
+    {
+        position: new THREE.Vector3(-0.5337, 1.1611, -0.6641),
+        element: document.querySelector('.point-2'),
+
+      
+    },
+ ]
+
+const pointgui = gui.addFolder('point 2 position')
+
+pointgui.add(points[2].position,'x', -10, 10).step(0.01).name('X Axis');
+pointgui.add(points[2].position,'y', -10, 10).step(0.01).name('Y Axis');
+pointgui.add(points[2].position,'z', -10, 10).step(0.01).name('Z Axis');
 
 /**
  * Sizes
@@ -324,6 +412,66 @@ const tick = () =>
 
     // Update controls
     controls.update()
+    if (sceneready){
+        for (const point of points){
+            const screenposition = point.position.clone()
+            screenposition.project(camera)
+  
+            raycaster.setFromCamera(screenposition, camera)
+            const intersect = raycaster.intersectObjects(scene.children, true)
+  
+          //   console.log(intersect)
+  
+            if(intersect.length ===0)
+            {
+              point.element.classList.add('visible')
+            }else{
+              const intersectiondistance = intersect[0].distance
+              const pointdisatance = point.position.distanceTo(camera.position)
+  
+              if(intersectiondistance < pointdisatance){
+                  point.element.classList.remove('visible')
+              }else{
+                  point.element.classList.add('visible')
+              }
+            }
+  
+            const translateX = screenposition.x * sizes.width *0.5
+            const translateY = -screenposition.y * sizes.height *0.5
+            point.element.style.transform = `translateX(${translateX}px) translateY(${translateY}px)` 
+            
+      }
+
+    }
+    //go throught each points :)
+    // for (const point of points){
+    //       const screenposition = point.position.clone()
+    //       screenposition.project(camera)
+
+    //       raycaster.setFromCamera(screenposition, camera)
+    //       const intersect = raycaster.intersectObjects(scene.children, true)
+
+    //     //   console.log(intersect)
+
+    //       if(intersect.length ===0)
+    //       {
+    //         point.element.classList.add('visible')
+    //       }else{
+    //         const intersectiondistance = intersect[0].distance
+    //         const pointdisatance = point.position.distanceTo(camera.position)
+
+    //         if(intersectiondistance < pointdisatance){
+    //             point.element.classList.remove('visible')
+    //         }else{
+    //             point.element.classList.add('visible')
+    //         }
+    //       }
+
+    //       const translateX = screenposition.x * sizes.width *0.5
+    //       const translateY = -screenposition.y * sizes.height *0.5
+    //       point.element.style.transform = `translateX(${translateX}px) translateY(${translateY}px)` 
+          
+    // }
 
     // Render
     renderer.render(scene, camera)

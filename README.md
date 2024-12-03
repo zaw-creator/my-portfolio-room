@@ -14,5 +14,3 @@ npm run dev
 # Build for production in the dist/ directory
 npm run build
 ```
-
-if you want to push the file to the  github dont forget to only push the resources,src,statc,package.json,vite.congig and readme
