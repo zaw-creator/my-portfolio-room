@@ -210,6 +210,13 @@ bakedbookstexture.colorSpace = THREE.SRGBColorSpace
 const bakedbooksmaterial= new THREE.MeshBasicMaterial({map:bakedbookstexture})
 bakedbooksmaterial.side = THREE.DoubleSide
 
+//baked skills shelves
+const bakedskillstexture = textureLoader.load('skills.jpg')
+bakedskillstexture.flipY = false
+bakedskillstexture.colorSpace = THREE.SRGBColorSpace
+const bakedskillsmaterial= new THREE.MeshBasicMaterial({map:bakedskillstexture})
+bakedskillsmaterial.side = THREE.DoubleSide
+
 //material
 
 
@@ -217,7 +224,7 @@ bakedbooksmaterial.side = THREE.DoubleSide
 let roommodel = null;
 gltfLoader.load('room.glb',(gltf)=>{
     roommodel = gltf.scene;
-    // console.log(gltf)
+    console.log(gltf)
    gltf.scene.traverse(child=>{
     // child.material = bakedwallmaterial
     // console.log(child)
@@ -231,9 +238,11 @@ gltfLoader.load('room.glb',(gltf)=>{
  gui.add(roommodel.position,'z').min(-5).max(5).step(0.01)
  gui.add(roommodel.position,'y').min(-5).max(5).step(0.01)
  gui.add(roommodel.position,'x').min(-5).max(5).step(0.01)
- pointgui.add(points[2].position,'x', -10, 10).step(0.01).name('X Axis');
-pointgui.add(points[2].position,'y', -10, 10).step(0.01).name('Y Axis');
-pointgui.add(points[2].position,'z', -10, 10).step(0.01).name('Z Axis');
+ pointgui.add(points[3].position,'x', -10, 10).step(0.01).name('X Axis');
+pointgui.add(points[3].position,'y', -10, 10).step(0.01).name('Y Axis');
+pointgui.add(points[3].position,'z', -10, 10).step(0.01).name('Z Axis');
+
+// gui.close()
 
 
 
@@ -252,6 +261,7 @@ pointgui.add(points[2].position,'z', -10, 10).step(0.01).name('Z Axis');
  const forestmodelGroup = gltf.scene.children.find(child=>child.name ==='water')
  const booksecondGroup = gltf.scene.children.find(child=>child.name ==='Cube004')
  const booksGroup = gltf.scene.children.find(child=>child.name ==='Cube041')
+ const skillsGroup = gltf.scene.children.find(child=>child.name=== 'skill')
 
 //in here we need to travers the entire group because the actual mesh is inside the group and we can not use the find function here
 
@@ -322,6 +332,11 @@ if(booksGroup){
     booksGroup.traverse(child=>{
         child.material = bakedbooksmaterial
 })}
+if(skillsGroup){
+    skillsGroup.traverse(child=>{
+        child.material = bakedskillsmaterial
+})}
+
 
 // //matrerial
 // chairmesh.material = bakedchairmaterial
@@ -344,6 +359,12 @@ const raycaster = new THREE.Raycaster()
     {
         position: new THREE.Vector3(-0.66, 0.98, 0.38),
         element: document.querySelector('.point-2'),
+
+      
+    },
+    {
+        position: new THREE.Vector3(-0.79, 1.6, 1.03),
+        element: document.querySelector('.point-3'),
 
       
     },
