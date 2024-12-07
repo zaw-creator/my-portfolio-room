@@ -363,7 +363,7 @@ const raycaster = new THREE.Raycaster()
       
     },
     {
-        position: new THREE.Vector3(-0.79, 1.6, 1.03),
+        position: new THREE.Vector3(-0.79, 1.55, 1.29),
         element: document.querySelector('.point-3'),
 
       
