@@ -244,9 +244,9 @@ gltfLoader.load('room.glb',(gltf)=>{
  gui.add(roommodel.position,'x').min(-5).max(5).step(0.01)
 
 
- pointgui.add(points[3].position,'x', -10, 10).step(0.01).name('X Axis');
-pointgui.add(points[3].position,'y', -10, 10).step(0.01).name('Y Axis');
-pointgui.add(points[3].position,'z', -10, 10).step(0.01).name('Z Axis');
+//  pointgui.add(points[3].position,'x', -10, 10).step(0.01).name('X Axis');
+// pointgui.add(points[3].position,'y', -10, 10).step(0.01).name('Y Axis');
+// pointgui.add(points[3].position,'z', -10, 10).step(0.01).name('Z Axis');
 
 // gui.close()
 
