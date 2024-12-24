@@ -242,20 +242,14 @@ gltfLoader.load('room.glb',(gltf)=>{
  gui.add(roommodel.position,'z').min(-5).max(5).step(0.01)
  gui.add(roommodel.position,'y').min(-5).max(5).step(0.01)
  gui.add(roommodel.position,'x').min(-5).max(5).step(0.01)
-<<<<<<< HEAD
- const pointgui = gui.addFolder('point 2 position')
- pointgui.add(points[2].position,'x', -10, 10).step(0.01).name('X Axis');
-pointgui.add(points[2].position,'y', -10, 10).step(0.01).name('Y Axis');
-pointgui.add(points[2].position,'z', -10, 10).step(0.01).name('Z Axis');
-pointgui.close();
-gui.close();
-=======
+
+
  pointgui.add(points[3].position,'x', -10, 10).step(0.01).name('X Axis');
 pointgui.add(points[3].position,'y', -10, 10).step(0.01).name('Y Axis');
 pointgui.add(points[3].position,'z', -10, 10).step(0.01).name('Z Axis');
 
 // gui.close()
->>>>>>> b779a133d791b579debf4d0af80f325054b2c8eb
+
 
 
 
