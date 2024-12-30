@@ -5,6 +5,9 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { gsap } from 'gsap'
 import { createchristmastree } from './christmastree.js'
+import { inject } from '@vercel/analytics';
+ 
+inject();
 // 
 
 
