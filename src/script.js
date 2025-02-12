@@ -357,6 +357,9 @@ if(skillsGroup){
     // console.log(gltf)
    scene.add(roommodel)
 })
+const light = new THREE.AmbientLight(0xffffff, 1); // Bright white light
+scene.add(light);
+
  //points
 const raycaster = new THREE.Raycaster()
  const points =[
@@ -556,46 +559,8 @@ createchristmastree(scene,gui);
 // })
 
 //snowflakes
-const snowflaketexture = textureLoader.load('./snowflake.png')
 
-const parameteers={xOffset: 5, // Offset in the X axis
-    yOffset: 5, // Offset in the Y axis
-    zOffset: 5 }
-parameteers.count = 100
-parameteers.size =0.3
-parameteers.spread = 3
-const snowflakes = [];
 
-const generatesnow = (xOffset, yOffset, zOffset) => {
-    const snowgeometry = new THREE.BufferGeometry();
-    const position = new Float32Array(parameteers.count * 3);
-
-    for (let i = 0; i < parameteers.count; i++) {
-        const i3 = i * 3;
-        position[i3] = (Math.random() - 0.5) * parameteers.spread + xOffset; // X position
-        position[i3 + 1] = Math.random() * 5 + yOffset; // Spawn above ground
-        position[i3 + 2] = (Math.random() - 0.5) * parameteers.spread + zOffset; // Z position
-    }
-
-    snowgeometry.setAttribute('position', new THREE.BufferAttribute(position, 3));
-
-    // Material
-    const snowmaterial = new THREE.PointsMaterial({
-        size: parameteers.size,
-        sizeAttenuation: true,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending,
-        alphaMap: snowflaketexture,
-        transparent: true,
-    });
-
-    // Snowflakes (Points)
-    const snowpoints = new THREE.Points(snowgeometry, snowmaterial);
-    scene.add(snowpoints);
-    snowflakes.push(snowpoints);
-};
-
-generatesnow(5,5,5);
 
 /**
  * Sizes
@@ -663,6 +628,56 @@ renderer.localClippingEnabled = true;
 
 //     geometry.attributes.position.needsUpdate = true; // Inform Three.js to update the positions
 // };
+const snowflakestexture = textureLoader.load('snowflake.png')
+
+const parameteers = {
+    xoffset: 0,
+    yoffset: 0,
+    zoffset: 0,
+}
+parameteers.count = 50;
+parameteers.spread =3;
+parameteers.size = 0.2;
+
+console.log(snowflakestexture)
+
+const snowflakes =[];
+
+
+const generatesnow = (xOffset = 0, yOffset = 0, zOffset = 0) => {
+    const snowgeometry = new THREE.BufferGeometry();
+    const position = new Float32Array(parameteers.count * 3);
+
+    for (let i = 0; i < parameteers.count; i++) {
+        const i3 = i * 3;
+        position[i3] = (Math.random() - 0.5) * parameteers.spread + xOffset; // X position
+        position[i3 + 1] = Math.random() * 5 + yOffset; // Spawn above ground
+        position[i3 + 2] = (Math.random() - 0.5) * parameteers.spread + zOffset; // Z position
+    }
+
+    snowgeometry.setAttribute('position', new THREE.BufferAttribute(position, 3));
+
+    // Material
+    const snowmaterial = new THREE.PointsMaterial({
+        size: parameteers.size,
+    sizeAttenuation: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    alphaMap: snowflakestexture,
+    transparent: true,
+    
+   
+    side: THREE.DoubleSide
+    });
+
+    // Snowflakes (Points)
+    const snowpoints = new THREE.Points(snowgeometry, snowmaterial);
+     // Render snowflakes on top of other objects
+
+    scene.add(snowpoints);
+    snowflakes.push(snowpoints);
+};
+generatesnow(0, 0, 0)
 
 /**
  * Animate
@@ -709,38 +724,7 @@ const tick = () =>
       }
 
     }
-    // snowflakes.forEach(snowflake => {
-    //     snowUpdate(snowflake.geometry, deltatime);
-    // });
-    //go throught each points :)
-    // for (const point of points){
-    //       const screenposition = point.position.clone()
-    //       screenposition.project(camera)
-
-    //       raycaster.setFromCamera(screenposition, camera)
-    //       const intersect = raycaster.intersectObjects(scene.children, true)
-
-    //     //   console.log(intersect)
-
-    //       if(intersect.length ===0)
-    //       {
-    //         point.element.classList.add('visible')
-    //       }else{
-    //         const intersectiondistance = intersect[0].distance
-    //         const pointdisatance = point.position.distanceTo(camera.position)
-
-    //         if(intersectiondistance < pointdisatance){
-    //             point.element.classList.remove('visible')
-    //         }else{
-    //             point.element.classList.add('visible')
-    //         }
-    //       }
-
-    //       const translateX = screenposition.x * sizes.width *0.5
-    //       const translateY = -screenposition.y * sizes.height *0.5
-    //       point.element.style.transform = `translateX(${translateX}px) translateY(${translateY}px)` 
-          
-    // }
+ 
 
     // Render
     renderer.render(scene, camera)
