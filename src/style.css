@@ -89,3 +89,35 @@ body
    transition: opacity 0.3s;
    pointer-events: none;
 }
+.point:hover {
+    transform: scale(1.05);
+    background: rgba(44, 44, 44, 0.9);
+}
+
+/* Typing cursor effect */
+#typing-text::after {
+    content: "|";
+    display: inline-block;
+    animation: blink 0.7s infinite;
+    opacity: 0; /* Initially hidden */
+}
+/* General hover effect for all .point elements */
+.point:hover {
+    transform: scale(1.05);
+    background: rgba(44, 44, 44, 0.9);
+}
+
+/* Typing cursor effect for all text inside .point */
+.point .text::after {
+    content: "|";
+    display: inline-block;
+    animation: blink 0.7s infinite;
+    opacity: 1;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+

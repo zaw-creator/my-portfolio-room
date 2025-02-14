@@ -641,43 +641,120 @@ parameteers.size = 0.2;
 
 console.log(snowflakestexture)
 
-const snowflakes =[];
 
 
-const generatesnow = (xOffset = 0, yOffset = 0, zOffset = 0) => {
-    const snowgeometry = new THREE.BufferGeometry();
-    const position = new Float32Array(parameteers.count * 3);
+// const snowflakes =[];
 
-    for (let i = 0; i < parameteers.count; i++) {
-        const i3 = i * 3;
-        position[i3] = (Math.random() - 0.5) * parameteers.spread + xOffset; // X position
-        position[i3 + 1] = Math.random() * 5 + yOffset; // Spawn above ground
-        position[i3 + 2] = (Math.random() - 0.5) * parameteers.spread + zOffset; // Z position
-    }
+// let snowpoints;
 
-    snowgeometry.setAttribute('position', new THREE.BufferAttribute(position, 3));
+// const generatesnow = (xOffset = 0, yOffset = 0, zOffset = 0) => {
+//     const snowgeometry = new THREE.BufferGeometry();
+//     const position = new Float32Array(parameteers.count * 3);
 
-    // Material
-    const snowmaterial = new THREE.PointsMaterial({
-        size: parameteers.size,
-    sizeAttenuation: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
-    alphaMap: snowflakestexture,
-    transparent: true,
+//     for (let i = 0; i < parameteers.count; i++) {
+//         const i3 = i * 3;
+//         position[i3] = (Math.random() - 0.5) * parameteers.spread + xOffset; // X position
+//         position[i3 + 1] = Math.random() * 5 + yOffset; // Spawn above ground
+//         position[i3 + 2] = (Math.random() - 0.5) * parameteers.spread + zOffset; // Z position
+//     }
+
+//     snowgeometry.setAttribute('position', new THREE.BufferAttribute(position, 3));
+
+//     // Material
+//     const snowmaterial = new THREE.PointsMaterial({
+//         size: parameteers.size,
+//         sizeAttenuation: true,
+//         depthWrite: false,
+//         blending: THREE.AdditiveBlending,
+//         alphaMap: snowflakestexture, // Ensure this is correctly set
+//         transparent: true,
+//         opacity: 0.8, // Adjust opacity if needed
+//         side: THREE.DoubleSide
+//     });
+
+//     // Snowflakes (Points)
+//     const snowpoints = new THREE.Points(snowgeometry, snowmaterial);
+//      // Render snowflakes on top of other objects
+
+//     scene.add(snowpoints);
+//     snowflakes.push(snowpoints);
+// };
+// generatesnow(0, 0, 0)
+
+// document.addEventListener("DOMContentLoaded", function () {
+//     const textElement = document.getElementById("typing-text");
+//     const text = "This model holds a special place for me. It marks the beginning of my journey into 3D design and immersive technology. Experimenting with these creations ignited my passion for crafting digital experiences.";
     
-   
-    side: THREE.DoubleSide
+//     let index = 0;
+
+//     function typeText() {
+//         if (index < text.length) {
+//             textElement.innerHTML = text.substring(0, index + 1);
+//             index++;
+//             setTimeout(typeText, 100); // Adjust speed (milliseconds per character)
+//         }
+//     }
+
+//     setTimeout(typeText, 500); // Delay before typing starts
+// });
+
+// document.addEventListener("DOMContentLoaded", function () {
+//     const textElement = document.getElementById("typing-text");
+//     const hoverTrigger = document.getElementById("hover-trigger");
+//     const text = "This model holds a special place for me. It marks the beginning of my journey into 3D design and immersive technology. Experimenting with these creations ignited my passion for crafting digital experiences.";
+    
+//     let index = 0;
+//     let typingStarted = false; // Prevent retyping on multiple hovers
+
+//     function typeText() {
+//         if (index < text.length) {
+//             textElement.innerHTML = text.substring(0, index + 1);
+//             index++;
+//             setTimeout(typeText, 30); // Adjust speed (milliseconds per character)
+//         } else {
+//             textElement.querySelector("::after").style.opacity = "1"; // Show cursor after typing
+//         }
+//     }
+
+//     hoverTrigger.addEventListener("mouseenter", function () {
+//         if (!typingStarted) {
+//             typingStarted = true;
+//             index = 0;
+//             textElement.innerHTML = ""; // Clear text before typing starts
+//             typeText();
+//         }
+//     });
+// });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const points = document.querySelectorAll(".point"); // Select all points
+
+    points.forEach(point => {
+        const textElement = point.querySelector(".text"); // Find text inside point
+        const originalText = textElement.innerText.trim(); // Store original text
+        let index = 0;
+        let typingStarted = false;
+
+        function typeText() {
+            if (index < originalText.length) {
+                textElement.innerText = originalText.substring(0, index + 1);
+                index++;
+                setTimeout(typeText, 30); // Adjust speed (milliseconds per character)
+            }
+        }
+
+        point.addEventListener("mouseenter", function () {
+            if (!typingStarted) {
+                typingStarted = true;
+                index = 0;
+                textElement.innerText = ""; // Clear text before typing starts
+                typeText();
+            }
+        });
     });
+});
 
-    // Snowflakes (Points)
-    const snowpoints = new THREE.Points(snowgeometry, snowmaterial);
-     // Render snowflakes on top of other objects
 
-    scene.add(snowpoints);
-    snowflakes.push(snowpoints);
-};
-generatesnow(0, 0, 0)
 
 /**
  * Animate
@@ -699,7 +776,9 @@ const tick = () =>
             screenposition.project(camera)
   
             raycaster.setFromCamera(screenposition, camera)
-            const intersect = raycaster.intersectObjects(scene.children, true)
+            const intersect = raycaster.intersectObjects(scene.children.filter(obj=> obj !== roommodel), true);
+        
+            // const intersect = raycaster.intersectObjects(scene.children.filter(obj=> obj !== snowpoints), true);
   
           //   console.log(intersect)
   
