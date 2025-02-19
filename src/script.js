@@ -728,32 +728,32 @@ console.log(snowflakestexture)
 
 document.addEventListener("DOMContentLoaded", function () {
     const points = document.querySelectorAll(".point"); // Select all points
-
     points.forEach(point => {
         const textElement = point.querySelector(".text"); // Find text inside point
-        const originalText = textElement.innerText.trim(); // Store original text
-        let index = 0;
-        let typingStarted = false;
+        if (textElement) { // Check if textElement exists
+            const originalText = textElement.innerText.trim(); // Store original text
+            let index = 0;
+            let typingStarted = false;
 
-        function typeText() {
-            if (index < originalText.length) {
-                textElement.innerText = originalText.substring(0, index + 1);
-                index++;
-                setTimeout(typeText, 30); // Adjust speed (milliseconds per character)
+            function typeText() {
+                if (index < originalText.length) {
+                    textElement.innerText = originalText.substring(0, index + 1);
+                    index++;
+                    setTimeout(typeText, 30); // Adjust speed (milliseconds per character)
+                }
             }
+
+            point.addEventListener("mouseenter", function () {
+                if (!typingStarted) {
+                    typingStarted = true;
+                    index = 0;
+                    textElement.innerText = ""; // Clear text before typing starts
+                    typeText();
+                }
+            });
         }
-
-        point.addEventListener("mouseenter", function () {
-            if (!typingStarted) {
-                typingStarted = true;
-                index = 0;
-                textElement.innerText = ""; // Clear text before typing starts
-                typeText();
-            }
-        });
     });
 });
-
 
 
 /**
